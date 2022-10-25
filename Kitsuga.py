@@ -1,16 +1,16 @@
+from dis import disco
 import tweepy
+from secretFile import token, oauth, oauthsecret, accesstoken, accesssecret, prefix
 
-auth = tweepy.OAuthHandler("", "")
-auth.set_access_token("", "")
+auth = tweepy.OAuthHandler(oauth, oauthsecret)
+auth.set_access_token(accesstoken, accesssecret)
 api = tweepy.API(auth)
-
-token = "xd"
-prefix = "+"
 
 from distutils import errors
 from logging import error
 import discord
 from discord.ext import commands, tasks
+from discord.ext.commands import MissingPermissions, has_permissions
 from discord.utils import get
 
 import re
@@ -46,8 +46,18 @@ async def id(ctx, args):
     await ctx.reply(int(''.join(filter(str.isdigit, args))), mention_author = False)
  
 @client.command(name='cock', brief='get your cock length')
-async def pp(ctx):
-    await ctx.reply(f'you got a {random.randint(0, 25)}cm long cock', mention_author = False)
+async def pp(ctx, *, member : discord.Member = None):
+    if member == None:
+        await ctx.reply(f'you got a {random.randint(0, 30)}cm long cock', mention_author = False)
+    else:
+        await ctx.reply(f'**{member}** got a {random.randint(0, 30)}cm long cock', mention_author = False)
+
+@client.command(name='howtall', brief='get your tallness')
+async def pp(ctx, *, member : discord.Member = None):
+    if member == None:
+        await ctx.reply(f'you are {random.randint(0, 250)}cm tall', mention_author = False)
+    else:
+        await ctx.reply(f'**{member}** is {random.randint(0, 250)}cm tall', mention_author = False)
  
 @client.command(name='genkey', brief='generate a key with random characters, max chars = 2000')
 async def randomkey(ctx, args):
@@ -75,14 +85,46 @@ async def roll(ctx):
 async def kps(ctx, valinta):
     valinnat=["rock", "paper", "scissors"]
     if valinta not in valinnat:
-        await ctx.reply("usable choices: rock, paper or scissors")
+        await ctx.reply("usable choices: rock, paper or scissors", mention_author = False)
     else:
         await ctx.reply(random.choice(valinnat), mention_author = False)
  
 @client.command(name='howgay', brief='check how gay you are')
-async def gayness(ctx):
+async def gayness(ctx, *, member : discord.Member = None):
     gay = random.randint(0,100)
-    await ctx.reply(f':rainbow_flag: you are {gay}% homosexual :rainbow_flag:', mention_author = False)
+    if member == None:
+        await ctx.reply(f':rainbow_flag: you are {gay}% homosexual :rainbow_flag:', mention_author = False)
+    else:
+        await ctx.reply(f':rainbow_flag: **{member}** is {gay}% homosexual :rainbow_flag:', mention_author = False)
+
+@client.command(name='howblack', brief='check how black you are')
+async def blackness(ctx, *, member: discord.Member = None):
+    black = random.randint(0,100)
+    stringTosay = ""
+    if member == None:
+        stringTosay = f"you are {black}"
+    else:
+        stringTosay = f"**{member}** is {black}"
+
+    if black < 21:
+        await ctx.reply(f':man::skin-tone-1: {stringTosay}% black :man::skin-tone-1:', mention_author = False)
+    elif black < 41:
+        await ctx.reply(f':man::skin-tone-2: {stringTosay}% black :man::skin-tone-2:', mention_author = False)
+    elif black < 61:
+        await ctx.reply(f':man::skin-tone-3: {stringTosay}% black :man::skin-tone-3:', mention_author = False)
+    elif black < 81:
+        await ctx.reply(f':man::skin-tone-4: {stringTosay}% black :man::skin-tone-4:', mention_author = False)
+    else:
+        await ctx.reply(f':man::skin-tone-5: {stringTosay}% black :man::skin-tone-5:\nhttps://media.tenor.com/rAsLTBe0DXoAAAAC/guy-biting-lip-flirt-guy.gif', mention_author = False)
+
+@client.command(name='howracist', brief='check how racist you are')
+async def racist(ctx, *, member: discord.Member = None):
+    racist = random.randint(0,100)
+    if member == None:
+        await ctx.reply(f'you are {racist}% racist.', mention_author = False)
+    else:
+        await ctx.reply(f'**{member}** is {racist}% racist.', mention_author = False)
+
  
 @client.command(name='avatar', brief='get persons avatar')
 async def avatar(ctx, *, member: discord.Member = None):
@@ -122,7 +164,7 @@ async def usernames(ctx, arg):
     for i in data["data"]:
         clearNames = str(i["name"])
         allnames.append(clearNames)
-    await ctx.reply(f"**Names:**: {', '.join(allnames)} and the current name: {crntName}! **Amount of names: __{len(allnames)} + 1 (Current username).__**")
+    await ctx.reply(f"**Names:** {', '.join(allnames)} and the current name: {crntName}! **Amount of names: __{len(allnames)} + 1 (Current username).__**")
 
 @client.command(name='discord', brief='get info about a discord profile by id or by tagging them')
 async def discordInfo(ctx, arg):
@@ -312,23 +354,70 @@ async def suggest(ctx, *, arg):
 
         await ctx.author.send(embed=embed)
 
-@client.command(name='homie', brief='sends my homie')
+@client.command(name='homies', brief='sends my homie')
 async def homie(ctx):
-    homieprofile = "https://www.roblox.com/users/27729207"
+    homieprofile = "https://www.roblox.com/users/27729207\nhttps://www.roblox.com/users/341869738"
     await ctx.reply(f"My dear homie is: :heart_eyes: {homieprofile} :heart_eyes:", mention_author = False)
 
-@client.command(name='tweet', brief='tweets something you include, must be text currenty. includes your name, tag and discord id.')
+@client.command(name='tweet', brief='tweets something you include, must be text currently. includes your name, tag and discord id.')
 async def tweet(ctx, *, arg):
     tweet = f"{ctx.author}\n{ctx.author.id}\nTweets: {arg}"
-    status = api.update_status(status=tweet)
+    status = api.update_status(status=arg)
 
-    await ctx.reply(f"Succesfully tweeted **{arg}**, remember your username, tag and discord id are included in the tweet to know who tweeted it.", mention_author = False)
+    await ctx.reply(f"Succesfully tweeted `{arg}`.", mention_author = False)
+
+@client.command(name='tweetreply')
+async def tweetreply(ctx, tweetId, *, reply):
+    api.update_status(status = f"{reply}", in_reply_to_status_id = tweetId, auto_populate_reply_metadata=True)
+    await ctx.reply(f"The reply: `{reply}` has been completed. ", mention_author = False)
+
+@client.command(name='description')
+async def changeDesc(ctx, *, description):
+        api.update_profile(description=f"{description}")
+        await ctx.reply(f"Succesfully changed description to: `{description}` on Twitter", mention_author = False)
+
+@client.command(name='liketweet')
+async def liketweet(ctx, tweetid):
+    api.create_favorite(tweetid)
+    await ctx.reply(f"Succesfully liked a tweet with the id: `{tweetid}` on Twitter", mention_author = False)
+
+@client.command(name='retweet')
+async def retweet(ctx, tweetid):
+    api.retweet(tweetid)
+    await ctx.reply(f"Succesfully retweeted a tweet with the id: `{tweetid}` on Twitter", mention_author = False)
+
+@client.command(name='deletetweet')
+async def deletetweet(ctx, tweetid):
+    api.destroy_status(tweetid)
+    await ctx.reply(f"Succesfully deleted a tweet with the id: `{tweetid}` on Twitter", mention_author = False)
+
+@client.command(name='follow')
+async def follow(ctx, user):
+    api.create_friendship(id=f"{user}")
+    await ctx.reply(f"Succesfully followed: `{user}` on Twitter", mention_author = False)
+
+@client.command(name='unfollow')
+async def follow(ctx, user):
+    api.destroy_friendship(id=f"{user}")
+    await ctx.reply(f"Succesfully unfollowed: `{user}` on Twitter", mention_author = False)
+
+@client.command(name='unliketweet')
+async def unliketweet(ctx, tweetid):
+    api.destroy_favorite(tweetid)
+    await ctx.reply(f"Succesfully unliked a tweet with the id: `{tweetid}` on Twitter. (**If it was ever liked even**)", mention_author = False)
+
+@client.command(name='unretweet')
+async def unretweet(ctx, tweetid):
+    api.unretweet(tweetid)
+    await ctx.reply(f"Succesfully unretweeted a tweet with the id: `{tweetid}` on Twitter. (**If it was ever retweeted even**)", mention_author = False)
 
 @client.command(name='getsomebitches', brief='get bitches')
 async def bitches(ctx):
     randomBitches = random.randrange(0,10)
     if randomBitches == 0:
         await ctx.reply(f'u got {randomBitches} bitches fr :skull:', mention_author = False)
+    elif randomBitches == 1:
+        await ctx.reply(f'u got 1 bitch fr :skull:', mention_author = False)
     else:
         await ctx.reply(f'nice u got {randomBitches} bitches at least its better than 1 :scream:', mention_author = False)
 
@@ -347,6 +436,52 @@ async def r34(ctx):
 @client.command(name='renstime')
 async def time(ctx):
     await ctx.reply(f"Ren's current time is: {strftime('%H:%M:%S', localtime())}", mention_author = False)
+
+
+@client.command(name = "poll", pass_context=True)
+@commands.has_permissions(administrator=True)
+async def poll(ctx, question, *options: str):
+    await ctx.message.delete()
+    if len(options) <= 1:
+        await ctx.reply('you need more than 1 option to make a poll lil bro', mention_author = False)
+        return
+    if len(options) > 10:
+        await ctx.reply('bro u cant make a poll w/ more than 10 choices lolz', mention_author = False)
+        return
+
+    if len(options) == 2 and options[0] == 'yes' and options[1] == 'no':
+        reactions = ['✅', '❌']
+    else:
+        reactions = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟']
+    description = []
+    for x, option in enumerate(options):
+        description += '\n\n {} {}'.format(reactions[x], option)
+    embed = discord.Embed(title=question, description=''.join(description))
+    react_message = await ctx.send(embed=embed)
+    for reaction in reactions[:len(options)]:
+        await react_message.add_reaction(reaction)
+    embed.set_footer(text='Poll ID: {}'.format(react_message.id))
+    await react_message.edit_message(embed=embed)
+    
+
+@client.command('blackirl')
+async def blackirl(ctx):
+    gif = 'https://media.tenor.com/rAsLTBe0DXoAAAAC/guy-biting-lip-flirt-guy.gif'
+    await ctx.reply(gif, mention_author = False)
+
+@client.command(name="kick")
+@commands.has_permissions(kick_members=True)
+async def kick(ctx, member: discord.Member = None, *, reason: str=None):
+    if member == None:
+        await ctx.reply("you can't kick yourself goofy", mention_author = False)
+        return
+    if reason ==  None:
+        await member.kick()
+        await ctx.send(f"**{member}** got kicked for legit: `no reason`")
+    else:
+        await member.kick(reason=reason)
+        await ctx.send(f"**{member}** got kicked for  `{reason}` LMFAO XDDDDD")
+
 
 @client.event
 async def on_command_error(ctx, error):

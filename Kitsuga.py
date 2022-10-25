@@ -1,28 +1,25 @@
-from dis import disco
 import tweepy
-from secretFile import token, oauth, oauthsecret, accesstoken, accesssecret, prefix
-
-auth = tweepy.OAuthHandler(oauth, oauthsecret)
-auth.set_access_token(accesstoken, accesssecret)
-api = tweepy.API(auth)
-
-from distutils import errors
-from logging import error
-import discord
-from discord.ext import commands, tasks
-from discord.ext.commands import MissingPermissions, has_permissions
-from discord.utils import get
-
 import re
 import json
-
 import string
 import random
 import requests
 import asyncio
- 
+import discord
+
+from dis import disco
+from secretFile import token, oauth, oauthsecret, accesstoken, accesssecret, prefix
+from distutils import errors
+from logging import error
+from discord.ext import commands, tasks
+from discord.ext.commands import MissingPermissions, has_permissions
+from discord.utils import get
 from datetime import datetime
 from time import sleep, localtime, strftime
+
+auth = tweepy.OAuthHandler(oauth, oauthsecret)
+auth.set_access_token(accesstoken, accesssecret)
+api = tweepy.API(auth)
 
 intents = discord.Intents
 intents = intents.all()

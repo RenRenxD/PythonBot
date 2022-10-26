@@ -1,4 +1,5 @@
 import tweepy
+import tweepy
 import re
 import json
 import string
@@ -8,7 +9,6 @@ import asyncio
 import discord
 
 from dis import disco
-from secretFile import token, oauth, oauthsecret, accesstoken, accesssecret, prefix
 from distutils import errors
 from logging import error
 from discord.ext import commands, tasks
@@ -16,6 +16,15 @@ from discord.ext.commands import MissingPermissions, has_permissions
 from discord.utils import get
 from datetime import datetime
 from time import sleep, localtime, strftime
+
+with open('config.json') as f:
+    config = json.load(f)
+token = str(config.get('token'))
+oauth = str(config.get('oauth'))
+oauthsecret = str(config.get('oauthsecret'))
+accesstoken = str(config.get('accesstoken'))
+accesssecret = str(config.get('accesssecret'))
+prefix = str(config.get('prefix'))
 
 auth = tweepy.OAuthHandler(oauth, oauthsecret)
 auth.set_access_token(accesstoken, accesssecret)
@@ -82,7 +91,7 @@ async def roll(ctx):
 async def kps(ctx, valinta):
     valinnat=["rock", "paper", "scissors"]
     if valinta not in valinnat:
-        await ctx.reply("usable choices: rock, paper or scissors", mention_author = False)
+        await ctx.reply("usable choices: rock, paper or scissors")
     else:
         await ctx.reply(random.choice(valinnat), mention_author = False)
  
@@ -384,9 +393,9 @@ async def retweet(ctx, tweetid):
     await ctx.reply(f"Succesfully retweeted a tweet with the id: `{tweetid}` on Twitter", mention_author = False)
 
 @client.command(name='deletetweet')
-async def deletetweet(ctx, tweetid):
-    api.destroy_status(tweetid)
-    await ctx.reply(f"Succesfully deleted a tweet with the id: `{tweetid}` on Twitter", mention_author = False)
+async def deletetweet(ctx, twitterid):
+    api.destroy_status(twitterid)
+    await ctx.reply(f"Succesfully deleted a tweet with the id: `{twitterid}` on Twitter", mention_author = False)
 
 @client.command(name='follow')
 async def follow(ctx, user):
@@ -401,7 +410,7 @@ async def follow(ctx, user):
 @client.command(name='unliketweet')
 async def unliketweet(ctx, tweetid):
     api.destroy_favorite(tweetid)
-    await ctx.reply(f"Succesfully unliked a tweet with the id: `{tweetid}` on Twitter. (**If it was ever liked even**)", mention_author = False)
+    await ctx.reply(f"Succesfully unliked a tweet with the id: `{tweetid}` on Twitter. (**If it was ever retweeted even**)", mention_author = False)
 
 @client.command(name='unretweet')
 async def unretweet(ctx, tweetid):
